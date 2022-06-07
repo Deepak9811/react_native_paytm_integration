@@ -22,7 +22,7 @@ export const generateToken = async (orderId, amount) => {
     .then(response => response.json())
     .then(result => {
       console.log("result",result)
-      return result;
+      return result?.hiddenInput?.txnToken;
     })
     .catch(error => console.log('error :- ', error));
 };

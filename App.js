@@ -383,60 +383,65 @@ const Payment = () => {
     // let amount = '1.00';
    
     
-
-    try {
-      let amount= amounts+'.00'
-      const tokens = await generateToken(orderId,amount);
-    // console.log('token :- ',await generateToken(amount))
-    const token= tokens.hiddenInput.txnToken
-    setTranxToken(token)
-
-    AllInOneSDKManager.startTransaction(
-      orderId,
-      MID,
-      token,
-      amount,
-      CALLBACK_URL+orderId,
-      isStaging,
-      appInvokeRestricted,
-      URL_SCHEME,
-    )
-    .then((result) => {
-      console.log("result", result);
-      setShowToast(JSON.stringify(result));
-      setOrderIdUpdated(false);
-    })
-    .catch((err) => {
-      setResult(err);
-      setShowToast("Error: " + err);
-      setOrderIdUpdated(false);
-    });
-
-      
-
-
-
-
-
-      // AllInOneSDKManager.startTransaction(
-      //   orderId,
-      //   MID,
-      //   token,
-      //   amt.toFixed(2),
-      //   CALLBACK_URL+orderId,
-      //   false,
-      //   false,
-      //   URL_SCHEME
-      // )
-      // .then((result) => {
-      //   console.log("gateway response", result);
-      // })
-      // .catch((err) => {
-      //   console.log("gateway error",err);
-      // });
-    } catch (error) {
-      console.log("try catch error",error)
+    if(amounts !=='0'){
+      try {
+        let amount= amounts+'.00'
+        const token = await generateToken(orderId,amount);
+      // console.log('token :- ',await generateToken(amount))
+      // const token= tokens.hiddenInput.txnToken
+      // setTranxToken(token)
+  
+      AllInOneSDKManager.startTransaction(
+        orderId,
+        MID,
+        token,
+        amount,
+        CALLBACK_URL+orderId,
+        isStaging,
+        appInvokeRestricted,
+        URL_SCHEME,
+      )
+      .then((result) => {
+        console.log("result", result);
+        setShowToast(JSON.stringify(result));
+        setOrderIdUpdated(false);
+      })
+      .catch((err) => {
+        setResult(err);
+        setShowToast("Error: " + err);
+        setOrderIdUpdated(false);
+      });
+  
+        
+  
+  
+  
+  
+  
+        // AllInOneSDKManager.startTransaction(
+        //   orderId,
+        //   MID,
+        //   token,
+        //   amt.toFixed(2),
+        //   CALLBACK_URL+orderId,
+        //   false,
+        //   false,
+        //   URL_SCHEME
+        // )
+        // .then((result) => {
+        //   console.log("gateway response", result);
+        // })
+        // .catch((err) => {
+        //   console.log("gateway error",err);
+        // });
+      } catch (error) {
+        console.log("try catch error",error)
+      }
+     
+    }else{
+      alert("amount check Please")
     }
+    
   }
   return (
     <>
