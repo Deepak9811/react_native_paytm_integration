@@ -295,7 +295,8 @@ import {
      TextInput,
      Button,
      StatusBar,
-     Switch
+     Switch,
+     Alert
    } from 'react-native';
 import AllInOneSDKManager from 'paytm_allinone_react-native';
 import { generateToken } from './Service';
@@ -312,7 +313,7 @@ const Payment = () => {
 
   const [MID, setMid] = useState('Contin18571014125103');
   const [orderId, setOrderId] = useState('');
-  const [amounts, setAmount] = useState('0');
+  const [amounts, setAmount] = useState('1');
   const [urlScheme, setURLScheme] = useState('');
   const [callbackUrl, setcallbackUrl] = useState('https://securegw.paytm.in/theia/paytmCallback?ORDER_ID='+orderId);
   const [tranxToken, setTranxToken] = useState('');
@@ -324,9 +325,9 @@ const Payment = () => {
   const generateOrderId = () => {
     const r = Math.random() * new Date().getMilliseconds();
     setOrderId(
-      'PARCEL' +
+      'CELECT' +
         (1 + Math.floor(r % 2000) + 10000) +
-        'b' +
+        'dk' +
         (Math.floor(r % 100000) + 10000),
     );
   };
@@ -387,7 +388,10 @@ const Payment = () => {
       try {
         let amount= amounts+'.00'
         const token = await generateToken(orderId,amount);
-      // console.log('token :- ',await generateToken(amount))
+      console.log('token :- ',token)
+      // if(token.length === 0){
+      //   alert("retry")
+      // }else
       // const token= tokens.hiddenInput.txnToken
       // setTranxToken(token)
   
@@ -403,19 +407,22 @@ const Payment = () => {
       )
       .then((result) => {
         console.log("result", result);
-        setShowToast(JSON.stringify(result));
-        setOrderIdUpdated(false);
+        if(result.RESPMSG === "Txn Success"){
+          setShowToast(JSON.stringify(result));
+          setOrderIdUpdated(false);
+          alert("TXN SUCCESS")
+          verify()
+        }else{
+          setShowToast(JSON.stringify(result));
+          setOrderIdUpdated(false);
+        }
+        
       })
       .catch((err) => {
         setResult(err);
         setShowToast("Error: " + err);
         setOrderIdUpdated(false);
       });
-  
-        
-  
-  
-  
   
   
         // AllInOneSDKManager.startTransaction(
@@ -443,6 +450,33 @@ const Payment = () => {
     }
     
   }
+
+
+  const verify=()=>{
+    console.log("showToast :- ",showToast)
+    fetch(`http://localhost:8080/verify-payment`, {
+       method: "POST",
+       headers: {
+         Accept: "application/json",
+         'content-type':"application/json"
+       },
+       body: showToast
+      
+     }).then((data) => {
+       console.log('data :- ',data)
+       data.json().then((resp) => {
+         console.log("Add Coupon", resp);
+         setShowToast(JSON.stringify(resp));
+       });
+     });
+    
+  }
+
+
+
+
+
+
   return (
     <>
         <StatusBar barStyle="default" />
